@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial_10_flutter/character_select.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,6 +64,13 @@ class _FirstPageState extends State<FirstPage>
                 ))
               },
             ),
+            IconButton.filledTonal(onPressed: () async {
+              var character = await Navigator.push<String>(context, MaterialPageRoute(builder: (context) => const CharacterSelect()));
+              if (character != null)
+              {
+                txtNameController.text = character;
+              }
+            }, icon: Icon(Icons.person))
           ],
         ),
       ),

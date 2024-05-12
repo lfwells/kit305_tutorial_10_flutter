@@ -20,8 +20,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class FirstPage extends StatelessWidget {
+class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage>
+{
+
+  var txtNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +46,7 @@ class FirstPage extends StatelessWidget {
           children: [
             Expanded(
               child: TextField(
+                controller: txtNameController,
                 decoration: const InputDecoration(
                     hintText: "Enter Name",
                     labelText: "Name"
@@ -47,7 +57,10 @@ class FirstPage extends StatelessWidget {
               child:const Text("Save"),
               onPressed: () =>
               {
-                //TODO: Navigate to second screen
+                //Navigate to second screen with data
+                Navigator.push(context, MaterialPageRoute(
+                    builder:(context) => SecondPage(name: txtNameController.text)
+                ))
               },
             ),
           ],

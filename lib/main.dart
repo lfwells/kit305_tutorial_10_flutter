@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_10_flutter/character_select_screen.dart';
 
+//this file has two pages, the tutorial solution (send data to Second Page)
+//additional parts from live coding highlighted with ***
 void main() {
   runApp(const MyApp());
 }
@@ -34,58 +36,67 @@ class _FirstPageState extends State<FirstPage>
 {
   //if we state values they will go here
   final TextEditingController _txtNameField = TextEditingController(text: "Starting Value");
+
+  //*** we added some state to display the final character info here
+  //see the Character_select_screen.dart file for all the new content
   String characterInfo = "";
 
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return Scaffold
+      (
       appBar: AppBar(
         title: const Text("My Flutter App"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
+        //*** We explored adding buttons to the top-right, the button does nothing though
         actions: [
           TextButton(onPressed: () { print("hello"); }, child: const Text("Save"))
         ],
       ),
+
+      //*** we explored adding a drawer hamburger button, that just holds a giant save button that does nothing
       drawer: Drawer(
         width: 100,
         child: TextButton(onPressed: () { print("hello"); }, child: const Text("Save"))
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _txtNameField,
-                    decoration: const InputDecoration(
-                        hintText: "Enter Name",
-                        labelText: "Name"
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  child:const Text("Save"),
-                  onPressed: () =>
-                  {
-                    //go to the next page
-                    Navigator.push(context, MaterialPageRoute (
-                      builder: getTheNextPage
-                    ),)
-                  },
-                ),
-                ElevatedButton.icon(onPressed: () async
-                {
-                  var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CharacterSelectScreen()));
-                  print(result);
-                  setState(() {
-                    characterInfo = result;
-                  });
-                }, icon: const Icon(Icons.people), label: const Text("Character Select"))
-              ],
+            TextField(
+              controller: _txtNameField,
+              decoration: const InputDecoration(
+                  hintText: "Enter Name",
+                  labelText: "Name"
+              ),
             ),
+
+            //****** I changed the layout after the lecture a bit to give more space
+            ElevatedButton(
+              child:const Text("Save"),
+              onPressed: () =>
+              {
+                //go to the next page
+                //*** we explored splitting this out into its own function
+                Navigator.push(context, MaterialPageRoute (
+                    builder: getTheNextPage
+                ),)
+              },
+            ),
+
+            //*** A new button that goes to a screen in a different page
+            //*** uses a "future" to await the user input from that page, and update the state
+            ElevatedButton.icon(onPressed: () async
+            {
+              var result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const CharacterSelectScreen()));
+              print(result);
+              setState(() {
+                characterInfo = result;
+              });
+            }, icon: const Icon(Icons.people), label: const Text("Character Select")),
 
             Text("Character info will appear here:"),
             Text(characterInfo)
@@ -95,6 +106,7 @@ class _FirstPageState extends State<FirstPage>
     );
   }
 
+  //*** different to the tutorial, just a stylistic choice
   Widget getTheNextPage(BuildContext context)
   {
     return SecondPage(name: _txtNameField.text);

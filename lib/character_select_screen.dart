@@ -4,6 +4,7 @@ class CharacterSelectScreen extends StatefulWidget
 {
   const CharacterSelectScreen({super.key});
 
+  //hard-coded list of names, could come from database
   static const characterNames = [
     "Rick",
     "Saul",
@@ -31,10 +32,10 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Character Select"),
+        title: const Text("Character Select"),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: () {
               Navigator.pop(context, "$selectedCharacter\nHealth:$health\nAttack:$attack");
             },
@@ -45,6 +46,7 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            //We split each of the two parts of the screen into their own functions, just to make them pretty
             buildTable(),
             buildCharacterSelector(context)
           ],
@@ -53,16 +55,18 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
     );
   }
 
-  Widget buildTable() {
+  Widget buildTable()
+  {
+    //table widgets are handy, I've added some extra nuce things to it, but by defauly only needs a list of TableRow children
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      columnWidths: {
+      columnWidths: const {
         0: FixedColumnWidth(100)
       },
       children: [
         TableRow(
           children: [
-            Text("Health"),
+            const Text("Health"),
             Slider(
               value: health,
               max: 100,
@@ -76,7 +80,7 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
         ),
         TableRow(
           children: [
-            Text("Attack"),
+            const Text("Attack"),
             Slider(
               value: attack,
               max: 100,
@@ -94,12 +98,14 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
 
   Widget buildCharacterSelector(BuildContext context)
   {
+    //HIGHER ORDER FUNCTIONS (map, where), LEARN THEM
+
     //filter the list using where then transform the list using map
     List<DropdownMenuItem<String>> dropdownItems = CharacterSelectScreen.characterNames.where((element) => element.startsWith("S")).map(createDropdownItemFromString).toList();
 
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
-        label: Text("Character Name"),
+        label: const Text("Character Name"),
         helperText: selectedCharacter == "Stroll" ? "Poor choice" :  "Select it or die"
       ),
       value: selectedCharacter,
@@ -108,19 +114,20 @@ class _CharacterSelectScreenState extends State<CharacterSelectScreen>
         setState(() {
           selectedCharacter = selected!;
         });
-        //in other event-based frameworks
+        //in event-based frameworks, we would have to do this, WE CANT DO THIS IN FLUTTER
         //if (selectedCharacter == "stroll") { find the dropdown, set its helptext...}
       }
     );
   }
 
+  //transformation function
   DropdownMenuItem<String> createDropdownItemFromString(String input)
   {
-    return DropdownMenuItem(child: Row(
+    return DropdownMenuItem(value: input, child: Row(
       children: [
-        Icon(Icons.person),
+        const Icon(Icons.person),
         Text(input),
       ],
-    ), value: input);
+    ));
   }
 }
